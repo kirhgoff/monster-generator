@@ -161,11 +161,18 @@ class Grammar
     public TreeNode<Symbol> Expand(TreeNode<Symbol> node)
     {
         List<Production> applicableRules = rules
-            .Where(rule => rule.input == node.data)
+            .Where(rule => {
+                Console.WriteLine("Checking input: " + rule.input.ToString() + " against node: " + node.ToString());
+                return rule.input == node.data;
+            })
             .ToList();
+
+        Console.WriteLine("Applicable rules: " + applicableRules.Count);
 
         foreach (Production rule in applicableRules)
         {
+            Console.WriteLine("Passing rule: " + rule.ToString());
+
             List<TreeNode<Symbol>> newNodes = rule.output
                 .Select(symbol => new TreeNode<Symbol>(symbol))
                 .ToList();
@@ -182,6 +189,7 @@ class Grammar
             
             foreach (TreeNode<Symbol> child in node.children)
             {
+                Console.WriteLine("Passing child: " + child.ToString());
                 Expand(child);
             }
         }
@@ -247,7 +255,10 @@ public class Program
 
         Grammar grammar = new Grammar(rules);
 
+        TreeNode<Symbol> earth = new TreeNode<Symbol>(new Symbol("root"));
         TreeNode<Symbol> seed = new TreeNode<Symbol>(new Symbol("seed"));
+        earth.AddChild(seed);
+
         TreeNode<Symbol> tree = grammar.Expand(seed);
 
         Console.WriteLine(tree.ToString());}
