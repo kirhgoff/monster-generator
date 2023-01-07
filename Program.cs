@@ -80,7 +80,7 @@ public class Production
 }
 
 //--------------------------------
-public class Parser 
+public class RulesParser 
 {
     public List<Production> Parse(string input)
     {
@@ -126,6 +126,57 @@ public class Parser
     }
 }
 
+public class Tree<T> 
+{
+    TreeNode root;
+}
+
+public class TreeNode 
+{
+    public T data { get; set; }
+    public List<TreeNode<T>> children { get; set; }
+
+    public TreeNode(T data)
+    {
+        this.data = data;
+        this.children = new List<Tree<T>>();
+    }
+
+    public void AddChild(Tree<T> child)
+    {
+        Children.Add(child);
+    }
+}
+
+
+class Grammar 
+{
+    List<Production> rules;
+
+    public Grammar(List<Production> rules)
+    {
+        this.rules = rules;
+    }
+
+    public Tree<Symbol> Expand(Symbol seed)
+    {
+        Tree<Symbol> tree = new Tree<Symbol>(seed);
+
+        List<Production> rules = this.rules.Where(rule => rule.input == seed).ToList();
+
+        foreach (Production rule in rules)
+        {
+            foreach (Symbol symbol in rule.output)
+            {
+                tree.AddChild(GenerateTree(symbol));
+            }
+        }
+
+        return tree;
+    }
+ 
+}
+
 public class Program
 {
 	public static void Main()
@@ -158,7 +209,7 @@ public class Program
             [hands] * [hand][hand]
         ";
 
-        Parser parser = new Parser();
+        RulesParser parser = new RulesParser();
         List<Production> rules = parser.Parse(input);
 
         foreach (Production rule in rules)
