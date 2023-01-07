@@ -123,7 +123,7 @@ public class RulesParser
         return rules;     
     }
 
-    List<Symbol> ParseSymbols(string input)
+    public List<Symbol> ParseSymbols(string input)
     {
         List<Symbol> symbols = new List<Symbol>();
 
@@ -217,7 +217,38 @@ class Grammar
 
 public class TreeNodePrinter
 {
-    public static void print(TreeNode<Symbol> root, int shift)
+    Dictionary<Symbol, string> embodiment = new Dictionary<Symbol, string>();
+
+    public TreeNodePrinter(string rules)
+    {
+        ParseRules(rules);
+    }
+
+    public void ParseRules(string input)
+    {
+        RulesParser parser = new RulesParser();
+
+        List<string> lines = input
+            .Split(new string[] { Environment.NewLine }, StringSplitOptions.None)
+            .Select(s => s.Trim())
+            .Where(s => s != "")
+            .ToList();
+
+        foreach (string line in lines)
+        {
+            string[] parts = line.Split(new string[] { "=>" }, StringSplitOptions.None);
+
+            Symbol key = parser.ParseSymbols(parts[0].Trim())[0];
+
+            embodiment.Add(key, parts[1].Trim());
+        }
+    }
+    public void Print(TreeNode<Symbol> root)
+    {
+        Print(root, 0);
+    }
+
+    private void Print(TreeNode<Symbol> root, int shift)
     {
         for (int i = 0; i < shift; i++)
         {
@@ -227,7 +258,7 @@ public class TreeNodePrinter
 
         foreach (TreeNode<Symbol> child in root.children)
         {
-            print(child, shift + 1);
+            Print(child, shift + 1);
         }
     }
 }
@@ -284,18 +315,26 @@ public class Program
             [face] * [eyes][nose][mouth]
         ";
 
+        string chars = @"
+            seed => s
+            head => h
+            body => b
+            face => f
+            eyes => e
+            hair => ~
+            nose => -
+            mouth => m
+        ";
+
         RulesParser parser = new RulesParser();
         List<Production> rules = parser.Parse(input);
 
         Grammar grammar = new Grammar(rules);
 
-        TreeNode<Symbol> earth = new TreeNode<Symbol>(new Symbol("root"));
         TreeNode<Symbol> seed = new TreeNode<Symbol>(new Symbol("seed"));
-        earth.AddChild(seed);
-
         TreeNode<Symbol> tree = grammar.Expand(seed);
 
         Console.WriteLine(">>> Tree <<<");
-        TreeNodePrinter.print(tree, 0);
+        new TreeNodePrinter(chars).Print(tree);
     }
 }
