@@ -54,12 +54,12 @@ public static class RuleTypeExtensions
 }
 
 //--------------------------------
-
+// TODO: make struct
 public class Production 
 {
-    RuleType ruleType;
-	Symbol input;
-	List<Symbol> output;
+    public RuleType ruleType;
+	public Symbol input;
+	public List<Symbol> output;
 
 	public Production(RuleType ruleType, Symbol input, List<Symbol> output) 
 	{
@@ -126,25 +126,25 @@ public class RulesParser
     }
 }
 
-public class Tree<T> 
-{
-    TreeNode root;
-}
-
-public class TreeNode 
+public class TreeNode<T> 
 {
     public T data { get; set; }
     public List<TreeNode<T>> children { get; set; }
 
-    public TreeNodeT data()
+    public TreeNode(T data)
     {
         this.data = data;
-        this.children = new List<Tree<T>>();
+        this.children = new List<TreeNode<T>>();
     }
 
-    public void AddChild(Tree<T> child)
+    public void AddChild(TreeNode<T> child)
     {
-        Children.Add(child);
+        children.Add(child);
+    }
+
+    public override string ToString()
+    {
+        return data?.ToString() ?? "null";
     }
 }
 
@@ -160,13 +160,13 @@ class Grammar
 
     public TreeNode<Symbol> Expand(TreeNode<Symbol> node)
     {
-        List<Production> rules = rules
-            .Where(rule => rule.input == node)
+        List<Production> applicableRules = rules
+            .Where(rule => rule.input == node.data)
             .ToList();
 
-        foreach (Production rule in rules)
+        foreach (Production rule in applicableRules)
         {
-            TreeNode<Symbol> newNodes = rule.output
+            List<TreeNode<Symbol>> newNodes = rule.output
                 .Select(symbol => new TreeNode<Symbol>(symbol))
                 .ToList();
 
@@ -180,7 +180,7 @@ class Grammar
                     break;
             }
             
-            foreach (TreeNode child in node.children)
+            foreach (TreeNode<Symbol> child in node.children)
             {
                 Expand(child);
             }
@@ -197,6 +197,7 @@ public class Program
 	{
         Test1();
         Test2();
+        Test3();
 	}
 
     static void Test1() 
@@ -231,4 +232,23 @@ public class Program
             Console.WriteLine(rule.ToString());
         }
     }
+
+    static void Test3() 
+    {
+        Console.WriteLine("--------- Test3 ---------");
+
+        string input = @"
+            [seed] * [head][body] 
+            [head] - [face][hair]
+        ";
+
+        RulesParser parser = new RulesParser();
+        List<Production> rules = parser.Parse(input);
+
+        Grammar grammar = new Grammar(rules);
+
+        TreeNode<Symbol> seed = new TreeNode<Symbol>(new Symbol("seed"));
+        TreeNode<Symbol> tree = grammar.Expand(seed);
+
+        Console.WriteLine(tree.ToString());}
 }
