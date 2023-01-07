@@ -136,7 +136,7 @@ public class TreeNode
     public T data { get; set; }
     public List<TreeNode<T>> children { get; set; }
 
-    public TreeNode(T data)
+    public TreeNodeT data()
     {
         this.data = data;
         this.children = new List<Tree<T>>();
@@ -158,21 +158,35 @@ class Grammar
         this.rules = rules;
     }
 
-    public Tree<Symbol> Expand(Symbol seed)
+    public TreeNode<Symbol> Expand(TreeNode<Symbol> node)
     {
-        Tree<Symbol> tree = new Tree<Symbol>(seed);
-
-        List<Production> rules = this.rules.Where(rule => rule.input == seed).ToList();
+        List<Production> rules = rules
+            .Where(rule => rule.input == node)
+            .ToList();
 
         foreach (Production rule in rules)
         {
-            foreach (Symbol symbol in rule.output)
+            TreeNode<Symbol> newNodes = rule.output
+                .Select(symbol => new TreeNode<Symbol>(symbol))
+                .ToList();
+
+            switch (rule.ruleType) 
             {
-                tree.AddChild(GenerateTree(symbol));
+                case RuleType.Expanding:
+                    node.children.AddRange(newNodes);
+                    break;
+                case RuleType.Continuing:
+                    node.children = newNodes;
+                    break;
+            }
+            
+            foreach (TreeNode child in node.children)
+            {
+                Expand(child);
             }
         }
 
-        return tree;
+        return node;
     }
  
 }
