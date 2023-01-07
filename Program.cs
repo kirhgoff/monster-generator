@@ -14,6 +14,23 @@ public class Symbol
 	{
 		return "[" + face + "]";
 	}
+
+    public override bool Equals(Object obj)
+   {
+      if ((obj == null) || ! this.GetType().Equals(obj.GetType()))
+      {
+         return false;
+      }
+      else {
+         Symbol another = (Symbol) obj;
+         return another.face == this.face;
+      }
+   }
+
+    public override int GetHashCode()
+    {
+        return this.face.GetHashCode();
+    }
 }
 
 //--------------------------------
@@ -163,7 +180,7 @@ class Grammar
         List<Production> applicableRules = rules
             .Where(rule => {
                 Console.WriteLine("Checking input: " + rule.input.ToString() + " against node: " + node.ToString());
-                return rule.input == node.data;
+                return rule.input.Equals(node.data);
             })
             .ToList();
 
@@ -196,7 +213,23 @@ class Grammar
 
         return node;
     }
- 
+}
+
+public class TreeNodePrinter
+{
+    public static void print(TreeNode<Symbol> root, int shift)
+    {
+        for (int i = 0; i < shift; i++)
+        {
+            Console.Write(" ");
+        }
+        Console.WriteLine(root.data.ToString());
+
+        foreach (TreeNode<Symbol> child in root.children)
+        {
+            print(child, shift + 1);
+        }
+    }
 }
 
 public class Program
@@ -248,6 +281,7 @@ public class Program
         string input = @"
             [seed] * [head][body] 
             [head] - [face][hair]
+            [face] * [eyes][nose][mouth]
         ";
 
         RulesParser parser = new RulesParser();
@@ -261,5 +295,7 @@ public class Program
 
         TreeNode<Symbol> tree = grammar.Expand(seed);
 
-        Console.WriteLine(tree.ToString());}
+        Console.WriteLine(">>> Tree <<<");
+        TreeNodePrinter.print(tree, 0);
+    }
 }
