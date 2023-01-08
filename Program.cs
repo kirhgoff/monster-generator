@@ -15,17 +15,18 @@ public class Symbol
 		return "[" + face + "]";
 	}
 
-    public override bool Equals(Object obj)
-   {
+    public override bool Equals(Object? obj)
+    {
       if ((obj == null) || ! this.GetType().Equals(obj.GetType()))
       {
          return false;
       }
       else {
          Symbol another = (Symbol) obj;
+
          return another.face == this.face;
       }
-   }
+    }
 
     public override int GetHashCode()
     {
@@ -267,9 +268,10 @@ public class Program
 {
 	public static void Main()
 	{
-        Test1();
-        Test2();
-        Test3();
+        // Test1();
+        // Test2();
+        // Test3();
+        Test4();
 	}
 
     static void Test1() 
@@ -336,5 +338,17 @@ public class Program
 
         Console.WriteLine(">>> Tree <<<");
         new TreeNodePrinter(chars).Print(tree);
+    }
+
+    static void Test4() 
+    {
+        Console.WriteLine("--------- Test4 ---------");
+        List<Shape> shapes = new List<Shape>() {
+            new Shape(0, 0, 10, '.'),
+            new Shape(0, 34, 5, 'o')
+        };
+
+        string picture = AsciiRenderer.Render(shapes);
+        Console.WriteLine(picture);
     }
 }
