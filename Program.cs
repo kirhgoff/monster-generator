@@ -345,7 +345,9 @@ public class Program
         Console.WriteLine("--------- Test4 ---------");
         List<Shape> shapes = new List<Shape>() {
             new Shape(0, 0, 10, '.'),
-            new Shape(0, 34, 5, 'o')
+            new Shape(10, 10, 5, 'o'),
+            new Shape(0, 10, 3, 'x'),
+            new Shape(10, 0, 3, '-'),
         };
 
         string picture = AsciiRenderer.Render(shapes);
