@@ -3,14 +3,12 @@ public struct Shape
     public double centerX;
     public double centerY;
     public double radius;
-    public char face;
 
-    public Shape(double centerX, double centerY, double radius, char face) 
+    public Shape(double centerX, double centerY, double radius) 
     {
         this.centerX = centerX;
         this.centerY = centerY;
         this.radius = radius;
-        this.face = face;
     }
 
     public bool Contains(double x, double y) 

@@ -1,14 +1,14 @@
 public class Symbol 
 {
-	string face;
+	public string id;
 
-	public Symbol(string face) {
-		this.face = face;
+	public Symbol(string id) {
+		this.id = id;
 	}
 
 	public override string ToString()
 	{
-		return "[" + face + "]";
+		return "[" + id + "]";
 	}
 
     public override bool Equals(Object? obj)
@@ -20,12 +20,12 @@ public class Symbol
       else {
          Symbol another = (Symbol) obj;
 
-         return another.face == this.face;
+         return another.id == this.id;
       }
     }
 
     public override int GetHashCode()
     {
-        return this.face.GetHashCode();
+        return this.id.GetHashCode();
     }
 }

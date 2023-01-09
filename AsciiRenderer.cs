@@ -8,17 +8,17 @@ public static class AsciiRenderer
     private static int screenWidth = 80;
     private static int screenHeight = 30;
 
-    public static string Render(List<Shape> shapes) 
+    public static string Render(List<Organella> organellas, SymbolMapper mapper) 
     {
-        double realLeft = shapes.Min(s => s.centerX - s.radius);
-        double realRight = shapes.Max(s => s.centerX + s.radius);
-        double realTop = shapes.Min(s => s.centerY - s.radius);
-        double realBottom = shapes.Max(s => s.centerY + s.radius);
-        Console.WriteLine("Real size: [{0}, {1}], [{2}, {3}]", realLeft, realTop, realRight, realBottom);
+        double realLeft = organellas.Min(s => s.shape.centerX - s.shape.radius);
+        double realRight = organellas.Max(s => s.shape.centerX + s.shape.radius);
+        double realTop = organellas.Min(s => s.shape.centerY - s.shape.radius);
+        double realBottom = organellas.Max(s => s.shape.centerY + s.shape.radius);
+        // Console.WriteLine("Real size: [{0}, {1}], [{2}, {3}]", realLeft, realTop, realRight, realBottom);
 
         double cellWidth = (realRight - realLeft) / (double) screenWidth;
         double cellHeight = (realBottom - realTop) / (double) screenHeight;
-        Console.WriteLine("Cell size: {0}, {1}", cellWidth, cellHeight);
+        // Console.WriteLine("Cell size: {0}, {1}", cellWidth, cellHeight);
 
         char[,] canvas = new char[screenWidth, screenHeight];
         for (int x = 0; x < screenWidth; x++) {
@@ -27,12 +27,13 @@ public static class AsciiRenderer
             }
         }
 
-        foreach (Shape shape in shapes) {
+        foreach (Organella organella in organellas) {
+            Shape shape = organella.shape;
             int screenStartX = (int)((shape.centerX - shape.radius - realLeft) / cellWidth);
             int screenEndX = (int)((shape.centerX + shape.radius - realLeft) / cellWidth);
             int screenStartY = (int)((shape.centerY - shape.radius - realTop) / cellHeight);
             int screenEndY = (int)((shape.centerY + shape.radius - realTop) / cellHeight);
-            Console.WriteLine("Shape screen size: [{0}, {1}], [{2}, {3}]", screenStartX, screenStartY, screenEndX, screenEndY);
+            // Console.WriteLine("Shape screen size: [{0}, {1}], [{2}, {3}]", screenStartX, screenStartY, screenEndX, screenEndY);
 
             for (int screenX = screenStartX; screenX < screenEndX; screenX ++) {
                 for (int screenY = screenStartY; screenY < screenEndY; screenY++) {
@@ -42,7 +43,7 @@ public static class AsciiRenderer
 
                     if (shape.Contains(x, y)) {
                         //Console.WriteLine("Shape screen: [{0}, {1}], real: {2}, {3}", screenX, screenY, x, y);
-                        canvas[screenX, screenY] = shape.face;
+                        canvas[screenX, screenY] = mapper.GetSymbol(organella.symbol.id);
                     }
                 }
             }
