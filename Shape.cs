@@ -1,0 +1,27 @@
+public struct Shape 
+{
+    public double centerX;
+    public double centerY;
+    public double radius;
+    public char face;
+
+    public Shape(double centerX, double centerY, double radius, char face) 
+    {
+        this.centerX = centerX;
+        this.centerY = centerY;
+        this.radius = radius;
+        this.face = face;
+    }
+
+    public bool Contains(double x, double y) 
+    {
+        if (x < centerX - radius || 
+            x > centerX + radius || 
+            y < centerY - radius || 
+            y > centerY + radius
+        ) {
+            return false;
+        }
+        return Math.Pow(x - centerX, 2) + Math.Pow(y - centerY, 2) <= Math.Pow(radius, 2);
+    }
+}
