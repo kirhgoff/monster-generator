@@ -1,20 +1,11 @@
+using System;
+
 public class Organella {
+    public string id = Guid.NewGuid().ToString();
     public Shape shape;
     public Symbol symbol;
-
-    public Transformation transformation;
-
-    public Organella(Symbol symbol, Shape shape, Transformation transformation) {
+    public Organella(Symbol symbol, Shape shape) {
         this.shape = shape;
         this.symbol = symbol;
-        this.transformation = transformation;
-    }
-
-    public static Organella CreateStable(Symbol symbol, Shape shape) {
-        return new Organella(
-            symbol, 
-            shape, 
-            new ConstantTransformation(shape.radius)
-        );
     }
 }

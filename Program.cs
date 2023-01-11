@@ -84,8 +84,8 @@ public class Program
         });
         Console.WriteLine("--------- Test4 ---------");
         List<Organella> organellas = new List<Organella>() {
-            Organella.CreateStable(new Symbol("head"), new Shape(0.0, 0.0, 10)),
-            Organella.CreateStable(new Symbol("body"), new Shape(10.0, 10.0, 5))
+            new Organella(new Symbol("head"), new Shape(0.0, 0.0, 10)),
+            new Organella(new Symbol("body"), new Shape(10.0, 10.0, 5))
         };
 
         string picture = AsciiRenderer.Render(organellas, mapper);

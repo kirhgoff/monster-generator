@@ -1,8 +1,6 @@
-using System;
 
 public struct Shape 
 {
-    public string id = Guid.NewGuid().ToString();
     public double centerX;
     public double centerY;
     public double radius;

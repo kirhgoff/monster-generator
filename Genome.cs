@@ -1,5 +1,5 @@
 struct Gene {
-    public string shapeId;
+    public string organId;
     public int dx;
     public int dy;
 }
@@ -11,35 +11,35 @@ public class Genome {
 
     private static Random random = new Random();
     
-    private Dictionary<string, Shape> shapes;
+    private Entity entity;
     private List<Gene> genes = new List<Gene>();
 
-    public Genome(List<Shape> shapes) 
+    public Genome(Entity entity) 
     {
-        this.shapes = shapes.ToDictionary(s => s.id, s => s);
-        this.genes = shapes
-            .Select(s => new Gene { shapeId = s.id, dx = 0, dy = 0 })
+        this.entity = entity;
+        this.genes = entity
+            .GetOrganellas()
+            .Select(s => new Gene { organId = o.id, dx = 0, dy = 0 })
             .ToList();
     }
 
-    private Genome(Dictionary<string, Shape> shapes, List<Gene> genes)
+    private Genome(Entity entity, List<Gene> genes)
     {
-        this.shapes = shapes;
+        this.entity = entity;
         this.genes = genes;
     }
 
     public Genome crossOver(Genome other)
     {
         //TODO: validate that we can compare them
-
         List<Gene> childGenes = new List<Gene>();
-
+        
         for (int i = 0; i < genes.Count; i++)
         {
             childGenes.Add(random.NextDouble() < CROSSOVER_RATE ? genes[i] : other.genes[i]);
         }
 
-        return new Genome(this.shapes, childGenes);
+        return new Genome(entity, childGenes);
     }
 
     public Genome mutate()
@@ -63,26 +63,29 @@ public class Genome {
             }
         }
 
-        return new Genome(this.shapes, mutatedGenes);
+        return new Genome(entity, mutatedGenes);
     }
 
     public double fitness()
     {
-        var overlap = GetPermutations(this.shapes.Values, 2)
-            .Select(p => p.ToArray())
-            .Select(p => new { shape1 = p[0], shape2 = p[1] })
-            .Select(p => new { 
-                shape1 = p.shape1, 
-                shape2 = p.shape2, 
-                overlap = p.shape1.overlapSquared(p.shape2)
-            })
-            .Sum(p => p.overlap);
+        //TODO: working here
+        return 0;
 
-        var rootDistance = this.shapes
-            .Select(p => p.Value.rootDistanceSquared())
-            .Sum();
+        // var overlap = GetPermutations(this.shapes.Values, 2)
+        //     .Select(p => p.ToArray())
+        //     .Select(p => new { shape1 = p[0], shape2 = p[1] })
+        //     .Select(p => new { 
+        //         shape1 = p.shape1, 
+        //         shape2 = p.shape2, 
+        //         overlap = p.shape1.overlapSquared(p.shape2)
+        //     })
+        //     .Sum(p => p.overlap);
 
-        return overlap + rootDistance;
+        // var rootDistance = this.shapes
+        //     .Select(p => p.Value.rootDistanceSquared())
+        //     .Sum();
+
+        // return overlap + rootDistance;
     }
 
     IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> items, int count)
