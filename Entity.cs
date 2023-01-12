@@ -1,41 +1,53 @@
 public class Entity 
 {
-    public List<Organella> bodyRoot = new List<Organella>();
+    // organella id
+    private Dictionary<string, string?> parents;
+    private Dictionary<string, Organella> organs;
 
-    private Entity(List<Organella> bodyRoot)
+    private Entity(Dictionary<string, string?> parents, Dictionary<string, Organella> organs)
     {
-        this.bodyRoot = bodyRoot;
+        this.parents = parents;
+        this.organs = organs;
     }
 
-    // public static Entity Create(TreeNode<Symbol> tree)
-    // {
-    //     return new Entity(tree.layout(tree));
-    // }
+    public static Entity MakeFrom(TreeNode<Symbol> tree)
+    {
+        Dictionary<string, string?> parents = new Dictionary<string, string?>();
+        Dictionary<string, Organella> organs = new Dictionary<string, Organella>();
+
+        Visit(tree, null, parents, organs);
+
+        return new Entity(parents, organs);
+    }
+
+    private static void Visit(
+        TreeNode<Symbol> node, 
+        Organella? parent,
+        Dictionary<string, string?> parents,
+        Dictionary<string, Organella> organs
+    ) 
+    {
+        var shape = new SymbolShaper().makeShapeFor(node.data);
+        var organ = new Organella(node.data, shape);
+        organs.Add(organ.id, organ);
+        if (parent != null)
+        {
+            parents.Add(organ.id, parent.id);
+        }
+        foreach (var child in node.children)
+        {
+            Visit(child, organ, parents, organs);
+        }
+    }
 
     public List<Organella> GetOrganellas()
     {
-        List<Organella> result = new List<Organella>();
-
-        for (organ in bodyRoot) {
-
-        }
+        return organs.Values.ToList();
     }
 }
 
-class EntityBuilderVisitor: TreeNodeVisitor<Symbol> 
-{
-    private List<Organella> result;
 
-    public EntityBuilderVisitor(List<Organella> result) {
-        this.result = result;
-    }
-
-    public void Visit(Symbol node, Symbol parent) {
-
-    }
-}
-
-class SymbolShaper 
+public class SymbolShaper 
 {
     private Dictionary<string, Shape> dictionary = new Dictionary<string, Shape>() {
             {"seed",  new Shape(0.0, 0.0, 0) },
@@ -48,7 +60,7 @@ class SymbolShaper
             {"mouth",  new Shape(0.0, 0.0, 3) },
     };
 
-    Shape makeShapeFor(Symbol symbol) {
+    public Shape makeShapeFor(Symbol symbol) {
         return dictionary[symbol.id];
     }
 }

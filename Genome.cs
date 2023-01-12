@@ -19,7 +19,7 @@ public class Genome {
         this.entity = entity;
         this.genes = entity
             .GetOrganellas()
-            .Select(s => new Gene { organId = o.id, dx = 0, dy = 0 })
+            .Select(o => new Gene { organId = o.id, dx = 0, dy = 0 })
             .ToList();
     }
 
@@ -52,7 +52,7 @@ public class Genome {
             {
                 mutatedGenes.Add(new Gene
                 {
-                    shapeId = gene.shapeId,
+                    organId = gene.organId,
                     dx = gene.dx + random.Next(-1, 1),
                     dy = gene.dy + random.Next(-1, 1)
                 });
