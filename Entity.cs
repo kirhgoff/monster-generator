@@ -8,6 +8,13 @@ public class Entity
     {
         this.parents = parents;
         this.organs = organs;
+
+        Console.WriteLine(">>> Parents <<<");
+        foreach (var pair in parents)
+        {
+            Console.WriteLine($"{pair.Key} => {pair.Value}");
+        }
+
     }
 
     public static Entity MakeFrom(TreeNode<Symbol> tree)
@@ -43,6 +50,18 @@ public class Entity
     public List<Organella> GetOrganellas()
     {
         return organs.Values.ToList();
+    }
+
+    public Organella? GetParent(Organella organ)
+    {
+        if (parents.ContainsKey(organ.id) == false)
+        {
+            return null;
+        } 
+        else 
+        {            
+            return organs[parents[organ.id]!];
+        }
     }
 }
 

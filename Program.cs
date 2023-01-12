@@ -116,8 +116,9 @@ public class Program
         Console.WriteLine(">>> Organellas <<<");
         foreach (Organella organella in entity.GetOrganellas())
         {
-            Console.WriteLine(organella.ToString());
+            Organella? parent = entity.GetParent(organella);
+            var parentName = (parent == null) ? "null" : parent.symbol.ToString();
+            Console.WriteLine(organella.ToString() + " => " + parentName);
         }
-
     }
 }
