@@ -8,4 +8,8 @@ public class Organella {
         this.shape = shape;
         this.symbol = symbol;
     }
+
+    public override string ToString() {
+        return $"Organella({id}, {symbol}, {shape})";
+    }
 }

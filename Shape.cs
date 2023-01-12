@@ -1,5 +1,5 @@
 
-public struct Shape 
+public class Shape 
 {
     public double centerX;
     public double centerY;
@@ -32,5 +32,13 @@ public struct Shape
 
     public double rootDistanceSquared() {
         return Math.Pow(centerX, 2) + Math.Pow(centerY, 2);
+    }
+
+    public override string ToString() {
+        return $"Shape({centerX}, {centerY}, {radius})";
+    }
+    
+    public Shape Copy() {
+        return new Shape(centerX, centerY, radius);
     }
 }

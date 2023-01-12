@@ -61,6 +61,6 @@ public class SymbolShaper
     };
 
     public Shape makeShapeFor(Symbol symbol) {
-        return dictionary[symbol.id];
+        return dictionary[symbol.id].Copy();
     }
 }

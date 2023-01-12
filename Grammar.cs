@@ -11,16 +11,16 @@ class Grammar
     {
         List<Production> applicableRules = rules
             .Where(rule => {
-                Console.WriteLine("Checking input: " + rule.input.ToString() + " against node: " + node.ToString());
+                // Console.WriteLine("Checking input: " + rule.input.ToString() + " against node: " + node.ToString());
                 return rule.input.Equals(node.data);
             })
             .ToList();
 
-        Console.WriteLine("Applicable rules: " + applicableRules.Count);
+        // Console.WriteLine("Applicable rules: " + applicableRules.Count);
 
         foreach (Production rule in applicableRules)
         {
-            Console.WriteLine("Passing rule: " + rule.ToString());
+            // Console.WriteLine("Passing rule: " + rule.ToString());
 
             List<TreeNode<Symbol>> newNodes = rule.output
                 .Select(symbol => new TreeNode<Symbol>(symbol))
@@ -38,7 +38,7 @@ class Grammar
             
             foreach (TreeNode<Symbol> child in node.children)
             {
-                Console.WriteLine("Passing child: " + child.ToString());
+                // Console.WriteLine("Passing child: " + child.ToString());
                 Expand(child);
             }
         }
