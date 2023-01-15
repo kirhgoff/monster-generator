@@ -8,8 +8,10 @@ public static class AsciiRenderer
     private static int screenWidth = 80;
     private static int screenHeight = 30;
 
-    public static string Render(List<Organella> organellas, SymbolMapper mapper) 
+    public static string Render(Entity entity, SymbolMapper mapper) 
     {
+        var organellas = entity.GetOrganellas();
+        
         double realLeft = organellas.Min(s => s.shape.centerX - s.shape.radius);
         double realRight = organellas.Max(s => s.shape.centerX + s.shape.radius);
         double realTop = organellas.Min(s => s.shape.centerY - s.shape.radius);
@@ -28,6 +30,9 @@ public static class AsciiRenderer
         }
 
         foreach (Organella organella in organellas) {
+            // if (organella.symbol.id == "body") {
+            //     continue;
+            // }
             Shape shape = organella.shape;
             int screenStartX = (int)((shape.centerX - shape.radius - realLeft) / cellWidth);
             int screenEndX = (int)((shape.centerX + shape.radius - realLeft) / cellWidth);

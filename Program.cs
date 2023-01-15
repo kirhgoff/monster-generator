@@ -76,22 +76,6 @@ public class Program
         Console.WriteLine(">>> Tree <<<");
         new TreeNodePrinter(chars).Print(tree);
     }
-
-    static void Test4() 
-    {
-        SymbolMapper mapper = new SymbolMapper(new Dictionary<string, char> {
-            { "head", '.' },
-            { "body", 'o' }
-        });
-        Console.WriteLine("--------- Test4 ---------");
-        List<Organella> organellas = new List<Organella>() {
-            new Organella(new Symbol("head"), new Shape(0.0, 0.0, 10)),
-            new Organella(new Symbol("body"), new Shape(10.0, 10.0, 5))
-        };
-
-        string picture = AsciiRenderer.Render(organellas, mapper);
-        Console.WriteLine(picture);
-    }
     
     static void Test5() 
     {
@@ -120,5 +104,30 @@ public class Program
             var parentName = (parent == null) ? "null" : parent.symbol.ToString();
             Console.WriteLine(organella.ToString() + " => " + parentName);
         }
+
+        Genome genome = new Genome(entity);
+        Console.WriteLine(">>> Genome 1 <<<");
+        Console.WriteLine(genome.ToString());
+
+        Console.WriteLine(">>> Genome 2 <<<");
+        for (int i = 0; i < 100; i++)
+        {
+            genome = genome.mutate();
+        }
+        Console.WriteLine(genome.ToString());
+
+        var changedEntity = genome.ToEntity();
+
+        SymbolMapper mapper = new SymbolMapper(new Dictionary<string, char> {
+            { "head", '.' },
+            { "body", 'o' },
+            { "face", 'f' },
+            { "eyes", 'e' },
+            { "hair", '~' },
+            { "nose", '-' },
+            { "mouth", 'm'}
+        });
+        string picture = AsciiRenderer.Render(changedEntity, mapper);
+        Console.WriteLine(picture);
     }
 }

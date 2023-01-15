@@ -1,3 +1,6 @@
+using System;
+using System.Text;
+
 struct Gene {
     public string organId;
     public int dx;
@@ -11,7 +14,7 @@ public class Genome {
 
     private static Random random = new Random();
     
-    private Entity entity;
+    public Entity entity;
     private List<Gene> genes = new List<Gene>();
 
     public Genome(Entity entity) 
@@ -68,9 +71,40 @@ public class Genome {
 
     public double fitness()
     {
-        //TODO: working here
-        return 0;
+        var organs = entity.GetOrganellas();
+        
+        // var overlap = distance between each other 
+        // minus sum of radius of each organ
+        var overlap = 
+            GetPermutations(organs, 2)
+                .Select(p => p.ToArray())
+                .Select(p => new { shape1 = p[0].shape, shape2 = p[1].shape })
+                .Select(p => new { 
+                    shape1 = p.shape1, 
+                    shape2 = p.shape2, 
+                    overlap = p.shape1.overlapSquared(p.shape2)
+                })
+                .Sum(p => p.overlap);
 
+        // var closeness = distance between each organ and its parent minus sum of radiuses
+        var e = this.entity;
+
+        var closeness = 
+            organs
+                // .Select(p => p.ToArray())
+                .Select(p => new { 
+                    shape = p.shape, 
+                    parentShape = e.GetParent(p)!.shape 
+                })
+                .Select(p => new { 
+                    shape = p.shape, 
+                    parentShape = p.parentShape, 
+                    overlap = p.shape.overlapSquared(p.parentShape)
+                })
+                .Sum(p => p.overlap);
+
+        return overlap + closeness;
+        // -----------------
         // var overlap = GetPermutations(this.shapes.Values, 2)
         //     .Select(p => p.ToArray())
         //     .Select(p => new { shape1 = p[0], shape2 = p[1] })
@@ -103,5 +137,26 @@ public class Genome {
 
             ++i;
         }
+    }
+
+    public override string ToString()
+    {
+        return genes
+            .Select(g => $">{entity.getById(g.organId)} {g.dx} {g.dy}\n")
+            .Aggregate((a, b) => $"{a}{b}");
+    }
+
+    public Entity ToEntity() 
+    {
+        var organs = entity.GetOrganellas();
+        var newOrgans = new List<Organella>();
+        for (int i = 0; i < genes.Count; i++)
+        {
+            var gene = genes[i];
+            var organ = organs[i];
+            var shape = new Shape(organ.shape.centerX + gene.dx, organ.shape.centerY + gene.dy, organ.shape.radius);
+            newOrgans.Add(new Organella(organ.symbol, shape, organ.id));
+        }
+        return entity.MakeWithOrgans(newOrgans);
     }
 }

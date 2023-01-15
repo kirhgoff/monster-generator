@@ -14,7 +14,6 @@ public class Entity
         {
             Console.WriteLine($"{pair.Key} => {pair.Value}");
         }
-
     }
 
     public static Entity MakeFrom(TreeNode<Symbol> tree)
@@ -22,12 +21,17 @@ public class Entity
         Dictionary<string, string?> parents = new Dictionary<string, string?>();
         Dictionary<string, Organella> organs = new Dictionary<string, Organella>();
 
-        Visit(tree, null, parents, organs);
+        Process(tree, null, parents, organs);
 
         return new Entity(parents, organs);
     }
 
-    private static void Visit(
+    public Entity MakeWithOrgans(List<Organella> organs)
+    {
+        return new Entity(parents, organs.ToDictionary(o => o.id));
+    }
+
+    private static void Process(
         TreeNode<Symbol> node, 
         Organella? parent,
         Dictionary<string, string?> parents,
@@ -43,8 +47,33 @@ public class Entity
         }
         foreach (var child in node.children)
         {
-            Visit(child, organ, parents, organs);
+            Process(child, organ, parents, organs);
         }
+    }
+
+    public Organella getById(string organId)
+    {
+        return organs[organId];
+    }
+
+    public List<Organella> getRoots() 
+    {
+        return parents
+            .Select(pair => pair.Key)
+            .Where(id => parents[id] == null)
+            .Select(id => organs[id])
+            .ToList();
+    }
+
+    public List<Organella> getChildren(Organella organ)
+    {
+        return parents
+            .Where(pair => parents[pair.Key] == organ.id)
+            .Select(pair => pair.Value)
+            .Where(id => id != null)
+            .Select(id => organs[id])
+            .Where(organ => organ != null)
+            .ToList();
     }
 
     public List<Organella> GetOrganellas()
@@ -71,7 +100,7 @@ public class SymbolShaper
     private Dictionary<string, Shape> dictionary = new Dictionary<string, Shape>() {
             {"seed",  new Shape(0.0, 0.0, 0) },
             {"head",  new Shape(0.0, 0.0, 5) },
-            {"body",  new Shape(0.0, 0.0, 40) },
+            {"body",  new Shape(0.0, 0.0, 7) },
             {"face",  new Shape(0.0, 0.0, 4) },
             {"eyes",  new Shape(0.0, 0.0, 1) },
             {"hair",  new Shape(0.0, 0.0, 1) },
