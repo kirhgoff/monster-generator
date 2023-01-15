@@ -23,7 +23,6 @@ public class Program
 
         RulesParser parser = new RulesParser();
         List<Production> rules = parser.Parse(input);
-
         Grammar grammar = new Grammar(rules);
 
         TreeNode<Symbol> seed = new TreeNode<Symbol>(new Symbol("seed"));
@@ -31,12 +30,10 @@ public class Program
 
         Entity entity = Entity.MakeFrom(tree);
 
-        Console.WriteLine(">>> Organellas <<<");
-        foreach (Organella organella in entity.GetOrganellas())
+        Console.WriteLine(">>> Pairs <<<");
+        foreach ((Organella child, Organella parent) in entity.GetPairs())
         {
-            Organella? parent = entity.GetParent(organella);
-            var parentName = (parent == null) ? "null" : parent.symbol.ToString();
-            Console.WriteLine(organella.ToString() + " => " + parentName);
+            Console.WriteLine(child + " => " + parent);
         }
 
         Entity changedEntity = new GeneticAlgorythm().LayOut(entity, 100, 100);

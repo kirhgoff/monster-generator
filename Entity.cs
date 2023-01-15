@@ -8,12 +8,6 @@ public class Entity
     {
         this.parents = parents;
         this.organs = organs;
-
-        Console.WriteLine(">>> Parents <<<");
-        foreach (var pair in parents)
-        {
-            Console.WriteLine($"{pair.Key} => {pair.Value}");
-        }
     }
 
     public static Entity MakeFrom(TreeNode<Symbol> tree)
@@ -51,12 +45,12 @@ public class Entity
         }
     }
 
-    public Organella getById(string organId)
+    public Organella GetById(string organId)
     {
         return organs[organId];
     }
 
-    public List<Organella> getRoots() 
+    public List<Organella> GetRoots() 
     {
         return parents
             .Select(pair => pair.Key)
@@ -65,7 +59,7 @@ public class Entity
             .ToList();
     }
 
-    public List<Organella> getChildren(Organella organ)
+    public List<Organella> GetChildren(Organella organ)
     {
         return parents
             .Where(pair => parents[pair.Key] == organ.id)
