@@ -76,6 +76,15 @@ public class Entity
             .ToList();
     }
 
+    public List<(Organella, Organella)> GetPairs()
+    {
+        return parents
+            .Where(pair => parents[pair.Key] != null)
+            .Where(pair => parents[pair.Value] != null)
+            .Select(pair => (organs[pair.Key], organs[parents[pair.Key]!]))
+            .ToList();
+    }
+
     public List<Organella> GetOrganellas()
     {
         return organs.Values.ToList();

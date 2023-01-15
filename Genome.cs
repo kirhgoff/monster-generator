@@ -17,13 +17,16 @@ public class Genome {
     public Entity entity;
     private List<Gene> genes = new List<Gene>();
 
-    public Genome(Entity entity) 
+    public static Genome Randomize(Entity entity) 
     {
-        this.entity = entity;
-        this.genes = entity
-            .GetOrganellas()
-            .Select(o => new Gene { organId = o.id, dx = 0, dy = 0 })
+        var genes = entity.GetOrganellas()
+            .Select(organ => new Gene {
+                organId = organ.id,
+                dx = random.Next(-10, 10),
+                dy = random.Next(-10, 10)
+            })
             .ToList();
+        return new Genome(entity, genes);
     }
 
     private Genome(Entity entity, List<Gene> genes)
@@ -32,20 +35,23 @@ public class Genome {
         this.genes = genes;
     }
 
-    public Genome crossOver(Genome other)
+    public Genome[] CrossOver(Genome other)
     {
         //TODO: validate that we can compare them
-        List<Gene> childGenes = new List<Gene>();
+        List<Gene> childGenes1 = new List<Gene>();
+        List<Gene> childGenes2 = new List<Gene>();
         
         for (int i = 0; i < genes.Count; i++)
         {
-            childGenes.Add(random.NextDouble() < CROSSOVER_RATE ? genes[i] : other.genes[i]);
+            var threshold = random.NextDouble() < CROSSOVER_RATE;
+            childGenes1.Add( threshold ? genes[i] : other.genes[i]);
+            childGenes2.Add( threshold ? other.genes[i] : genes[i]);
         }
 
-        return new Genome(entity, childGenes);
+        return new Genome[] {new Genome(entity, childGenes1), new Genome(entity, childGenes2) };
     }
 
-    public Genome mutate()
+    public Genome Mutate()
     {
         List<Gene> mutatedGenes = new List<Gene>();
 
@@ -69,16 +75,15 @@ public class Genome {
         return new Genome(entity, mutatedGenes);
     }
 
-    public double fitness()
+    public double Fitness()
     {
         var organs = entity.GetOrganellas();
         
-        // var overlap = distance between each other 
+        // var overlap = distance between parent and child 
         // minus sum of radius of each organ
         var overlap = 
-            GetPermutations(organs, 2)
-                .Select(p => p.ToArray())
-                .Select(p => new { shape1 = p[0].shape, shape2 = p[1].shape })
+            entity.GetPairs()
+                .Select(p => new { shape1 = p.Item1.shape, shape2 = p.Item2.shape })
                 .Select(p => new { 
                     shape1 = p.shape1, 
                     shape2 = p.shape2, 
@@ -103,23 +108,11 @@ public class Genome {
                 })
                 .Sum(p => p.overlap);
 
-        return overlap + closeness;
-        // -----------------
-        // var overlap = GetPermutations(this.shapes.Values, 2)
-        //     .Select(p => p.ToArray())
-        //     .Select(p => new { shape1 = p[0], shape2 = p[1] })
-        //     .Select(p => new { 
-        //         shape1 = p.shape1, 
-        //         shape2 = p.shape2, 
-        //         overlap = p.shape1.overlapSquared(p.shape2)
-        //     })
-        //     .Sum(p => p.overlap);
+        var rootDistance = organs
+            .Select(p => p.shape.rootDistanceSquared())
+            .Sum();
 
-        // var rootDistance = this.shapes
-        //     .Select(p => p.Value.rootDistanceSquared())
-        //     .Sum();
-
-        // return overlap + rootDistance;
+        return overlap + rootDistance;
     }
 
     IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> items, int count)
