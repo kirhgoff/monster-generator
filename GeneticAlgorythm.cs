@@ -8,6 +8,7 @@ public class GeneticAlgorythm
         for (int i = 0; i < populationSize; i++) {
             population.Add(Genome.Randomize(entity));
         }
+        Console.WriteLine("Random entity: " + population.First());
 
         for (int i = 0; i < iterations; i++) {
             population = population
@@ -23,6 +24,6 @@ public class GeneticAlgorythm
             .OrderBy(genome => genome.Fitness())
             .First();
 
-        return theBest.entity;
+        return theBest.ToEntity();
     }
 } 

@@ -36,7 +36,7 @@ public class Program
             Console.WriteLine(child + " => " + parent);
         }
 
-        Entity changedEntity = new GeneticAlgorythm().LayOut(entity, 100, 100);
+        Entity changedEntity = new GeneticAlgorythm().LayOut(entity, 500, 500);
 
         SymbolMapper mapper = new SymbolMapper(new Dictionary<string, char> {
             { "head", '.' },
