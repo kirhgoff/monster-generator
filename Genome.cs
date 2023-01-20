@@ -96,7 +96,7 @@ public class Genome {
 
         var closeness = 
             organs
-                // .Select(p => p.ToArray())
+                .Where(p => e.GetParent(p) != null)
                 .Select(p => new { 
                     shape = p.shape, 
                     parentShape = e.GetParent(p)!.shape 
