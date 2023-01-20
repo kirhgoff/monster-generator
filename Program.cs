@@ -7,45 +7,13 @@ public class Program
         // Test1();
         // Test2();
         // Test3();
-        Test4();
+        // Test4();
+        Test5();
 	}
-
-    static void Test1() 
+    
+    static void Test5() 
     {
-        Console.WriteLine("--------- Test1 ---------");
-
-		Symbol input = new Symbol("seed");
-		List<Symbol> output = new List<Symbol>{ new Symbol("head"), new Symbol("body") };
-		Production prod1 = new Production(RuleType.Expanding, input, output);
-
-		Console.WriteLine(prod1.ToString());        
-    }
-    static void Test2()
-    {
-        Console.WriteLine("--------- Test2 ---------");
-
-        string input = @"
-            [seed] * [head][body] 
-            [head] - [face][hair]
-            [body] - [torso][legs]
-            [face] - [eyes][nose][mouth]
-            [torso] - [chest][hands]
-            [legs] * [leg][leg]
-            [hands] * [hand][hand]
-        ";
-
-        RulesParser parser = new RulesParser();
-        List<Production> rules = parser.Parse(input);
-
-        foreach (Production rule in rules)
-        {
-            Console.WriteLine(rule.ToString());
-        }
-    }
-
-    static void Test3() 
-    {
-        Console.WriteLine("--------- Test3 ---------");
+        Console.WriteLine("--------- Test5 ---------");
 
         string input = @"
             [seed] * [head][body] 
@@ -53,42 +21,33 @@ public class Program
             [face] * [eyes][nose][mouth]
         ";
 
-        string chars = @"
-            seed => s
-            head => h
-            body => b
-            face => f
-            eyes => e
-            hair => ~
-            nose => -
-            mouth => m
-        ";
-
         RulesParser parser = new RulesParser();
         List<Production> rules = parser.Parse(input);
-
         Grammar grammar = new Grammar(rules);
 
         TreeNode<Symbol> seed = new TreeNode<Symbol>(new Symbol("seed"));
         TreeNode<Symbol> tree = grammar.Expand(seed);
 
-        Console.WriteLine(">>> Tree <<<");
-        new TreeNodePrinter(chars).Print(tree);
-    }
+        Entity entity = Entity.MakeFrom(tree);
 
-    static void Test4() 
-    {
+        Console.WriteLine(">>> Pairs <<<");
+        foreach ((Organella child, Organella parent) in entity.GetPairs())
+        {
+            Console.WriteLine(child + " => " + parent);
+        }
+
+        Entity changedEntity = new GeneticAlgorythm().LayOut(entity, 500, 500);
+
         SymbolMapper mapper = new SymbolMapper(new Dictionary<string, char> {
             { "head", '.' },
-            { "body", 'o' }
+            { "body", 'o' },
+            { "face", 'f' },
+            { "eyes", 'e' },
+            { "hair", '~' },
+            { "nose", '-' },
+            { "mouth", 'm'}
         });
-        Console.WriteLine("--------- Test4 ---------");
-        List<Organella> organellas = new List<Organella>() {
-            Organella.CreateStable(new Symbol("head"), new Shape(0.0, 0.0, 10)),
-            Organella.CreateStable(new Symbol("body"), new Shape(10.0, 10.0, 5))
-        };
-
-        string picture = AsciiRenderer.Render(organellas, mapper);
+        string picture = AsciiRenderer.Render(changedEntity, mapper);
         Console.WriteLine(picture);
     }
 }
