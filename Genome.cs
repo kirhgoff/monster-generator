@@ -135,7 +135,7 @@ public class Genome {
     public override string ToString()
     {
         return genes
-            .Select(g => $">{entity.getById(g.organId)} {g.dx} {g.dy}\n")
+            .Select(g => $">{entity.GetById(g.organId)} {g.dx} {g.dy}\n")
             .Aggregate((a, b) => $"{a}{b}");
     }
 

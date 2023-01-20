@@ -45,11 +45,6 @@ public class Entity
         }
     }
 
-    public Organella GetById(string organId)
-    {
-        return organs[organId];
-    }
-
     public List<Organella> GetRoots() 
     {
         return parents
@@ -62,20 +57,16 @@ public class Entity
     public List<Organella> GetChildren(Organella organ)
     {
         return parents
-            .Where(pair => parents[pair.Key] == organ.id)
-            .Select(pair => pair.Value)
-            .Where(id => id != null)
-            .Select(id => organs[id])
-            .Where(organ => organ != null)
+            .Where(pair => pair.Value == organ.id)
+            .Select(pair => organs[pair.Key])
             .ToList();
     }
 
     public List<(Organella, Organella)> GetPairs()
     {
         return parents
-            .Where(pair => parents[pair.Key] != null)
-            .Where(pair => parents[pair.Value] != null)
-            .Select(pair => (organs[pair.Key], organs[parents[pair.Key]!]))
+            .Where(pair => pair.Value != null)
+            .Select(pair => (organs[pair.Value!], organs[pair.Key]))
             .ToList();
     }
 
@@ -93,6 +84,18 @@ public class Entity
         else 
         {            
             return organs[parents[organ.id]!];
+        }
+    }
+
+    public Organella? GetById(string organId)
+    {
+        if (organs.ContainsKey(organId))
+        {
+            return organs[organId];
+        }
+        else
+        {
+            return null;
         }
     }
 }
