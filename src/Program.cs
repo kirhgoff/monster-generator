@@ -30,13 +30,9 @@ public class Program
 
         Entity entity = Entity.MakeFrom(tree);
 
-        Console.WriteLine(">>> Pairs <<<");
-        foreach ((Organella child, Organella parent) in entity.GetPairs())
-        {
-            Console.WriteLine(child + " => " + parent);
-        }
+        // Entity changedEntity = new GeneticAlgorythm().LayOut(entity, 500, 500);
 
-        Entity changedEntity = new GeneticAlgorythm().LayOut(entity, 500, 500);
+        Entity changedEntity = new ForceBasedAlgorythm().LayOut(entity, 100);
 
         SymbolMapper mapper = new SymbolMapper(new Dictionary<string, char> {
             { "head", '.' },

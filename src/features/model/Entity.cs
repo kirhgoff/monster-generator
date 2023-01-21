@@ -75,6 +75,11 @@ public class Entity
         return organs.Values.ToList();
     }
 
+    public Entity MakeCopy()
+    {
+        return MakeWithOrgans(GetOrganellas());
+    }
+
     public Organella? GetParent(Organella organ)
     {
         if (parents.ContainsKey(organ.id) == false)
