@@ -15,7 +15,7 @@ public class Program
 
         // Entity changedEntity = new GeneticAlgorythm().LayOut(entity, 500, 500);
 
-        Entity changedEntity = new ForceBasedAlgorythm().LayOut(entity, 10);
+        Entity changedEntity = new ForceBasedAlgorythm().LayOut(entity, 100);
 
         PrintEntity(changedEntity);
     }

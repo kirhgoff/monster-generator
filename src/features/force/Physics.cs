@@ -8,17 +8,18 @@ public class Physics
     // To our ornagella
     public Force IntersectionForce(Organella organ, Organella otherOrgan)
     {
-        var intersectSquared = organ.shape.OverlapSquared(otherOrgan.shape);
-        if (intersectSquared == 0)
+        var overlap = organ.shape.Overlap(otherOrgan.shape);
+        if (overlap <= 0)
         {
             return new Force(new Vector2D(0, 0));
         }
+        Console.WriteLine($"Intersection! {organ.symbol} vs {otherOrgan.symbol} squared: {overlap}");
         var vector = new VectorBuilder()
             .FromCenterOf(otherOrgan)
             .ToCenterOf(organ)
-            .DownIfZero();
+            .RandomIfZero();
 
-        return new Force(vector * intersectSquared * INTERSECTION_FORCE);
+        return new Force(vector * overlap * INTERSECTION_FORCE);
     }
 
     public Force ChildParentForce(Organella organ, Organella parent)
@@ -26,7 +27,7 @@ public class Physics
         var vector = new VectorBuilder()
             .FromCenterOf(organ)
             .ToCenterOf(parent)
-            .UpIfZero();
+            .RandomIfZero();
 
         return new Force(vector * CHILD_PARENT_FORCE);
     }

@@ -24,10 +24,14 @@ public class Shape
         return Math.Pow(x - centerX, 2) + Math.Pow(y - centerY, 2) <= Math.Pow(radius, 2);
     }
 
-    public double OverlapSquared(Shape another) {
-        return  Math.Pow(centerX - another.centerX, 2) 
-                + Math.Pow(centerY - another.centerY, 2) 
-                - Math.Pow(radius + another.radius, 2);
+    public double Overlap(Shape another) {
+        var distance = Math.Sqrt(Math.Pow(centerX - another.centerX, 2) 
+                + Math.Pow(centerY - another.centerY, 2));
+        if (distance > radius + another.radius) {
+            return 0;
+        }
+
+        return (radius + another.radius - distance) / 2;
     }
 
     public double RootDistanceSquared() {

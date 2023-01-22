@@ -87,7 +87,7 @@ public class Genome {
                 .Select(p => new { 
                     shape1 = p.shape1, 
                     shape2 = p.shape2, 
-                    overlap = p.shape1.OverlapSquared(p.shape2)
+                    overlap = p.shape1.Overlap(p.shape2)
                 })
                 .Sum(p => p.overlap);
 
@@ -104,7 +104,7 @@ public class Genome {
                 .Select(p => new { 
                     shape = p.shape, 
                     parentShape = p.parentShape, 
-                    overlap = p.shape.OverlapSquared(p.parentShape)
+                    overlap = p.shape.Overlap(p.parentShape)
                 })
                 .Sum(p => p.overlap);
 
