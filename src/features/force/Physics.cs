@@ -1,17 +1,39 @@
 public class Physics 
 {
-    public Force IntersectionForce(Organella organ1, Organella organ2, double intersectSquared)
+    public static readonly double INTERSECTION_FORCE = 0.5;
+    public static readonly double CHILD_PARENT_FORCE = 0.3;
+    public static readonly double FRICTION_FORCE = 0.1;
+
+    // Calculates the force that pushes from surrounging organs
+    // To our ornagella
+    public Force IntersectionForce(Organella organ, Organella otherOrgan)
     {
-        return new Force(new Vector2D(0, 0));
+        var intersectSquared = organ.shape.OverlapSquared(otherOrgan.shape);
+        if (intersectSquared == 0)
+        {
+            return new Force(new Vector2D(0, 0));
+        }
+        var vector = new VectorBuilder()
+            .FromCenterOf(otherOrgan)
+            .ToCenterOf(organ)
+            .DownIfZero();
+
+        return new Force(vector * intersectSquared * INTERSECTION_FORCE);
     }
 
-    public Force ChildParentForce(Organella organ1, Organella organ2)
+    public Force ChildParentForce(Organella organ, Organella parent)
     {
-        return new Force(new Vector2D(0, 0));
+        var vector = new VectorBuilder()
+            .FromCenterOf(organ)
+            .ToCenterOf(parent)
+            .UpIfZero();
+
+        return new Force(vector * CHILD_PARENT_FORCE);
     }
 
-    public Force FrictionForce(Organella organ1)
+    public Force FrictionForce(Organella organ, Force overallForce)
     {
-        return new Force(new Vector2D(0, 0));
+        var vector = overallForce.vector * -1;
+        return new Force(vector * FRICTION_FORCE);
     }
-}
+ }

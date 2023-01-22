@@ -4,17 +4,24 @@ public class Program
 {
 	public static void Main()
 	{
-        // Test1();
-        // Test2();
-        // Test3();
-        // Test4();
-        Test5();
+        Test6();
 	}
     
-    static void Test5() 
+    static void Test6() 
     {
         Console.WriteLine("--------- Test5 ---------");
 
+        Entity entity = GenerateEntity();
+
+        // Entity changedEntity = new GeneticAlgorythm().LayOut(entity, 500, 500);
+
+        Entity changedEntity = new ForceBasedAlgorythm().LayOut(entity, 10);
+
+        PrintEntity(changedEntity);
+    }
+
+    public static Entity GenerateEntity() 
+    {
         string input = @"
             [seed] * [head][body] 
             [head] - [face][hair]
@@ -28,11 +35,16 @@ public class Program
         TreeNode<Symbol> seed = new TreeNode<Symbol>(new Symbol("seed"));
         TreeNode<Symbol> tree = grammar.Expand(seed);
 
-        Entity entity = Entity.MakeFrom(tree);
+        return Entity.MakeFrom(tree);
+    }
 
-        // Entity changedEntity = new GeneticAlgorythm().LayOut(entity, 500, 500);
-
-        Entity changedEntity = new ForceBasedAlgorythm().LayOut(entity, 100);
+    public static void PrintEntity(Entity entity) 
+    {
+        for (int i = 0; i < entity.GetOrganellas().Count; i++)
+        {
+            Organella organ = entity.GetOrganellas()[i];
+            Console.WriteLine(organ.symbol + " " + organ.shape);
+        }
 
         SymbolMapper mapper = new SymbolMapper(new Dictionary<string, char> {
             { "head", '.' },
@@ -43,7 +55,8 @@ public class Program
             { "nose", '-' },
             { "mouth", 'm'}
         });
-        string picture = AsciiRenderer.Render(changedEntity, mapper);
+        string picture = AsciiRenderer.Render(entity, mapper);
         Console.WriteLine(picture);
+
     }
 }

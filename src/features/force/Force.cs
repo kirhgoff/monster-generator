@@ -11,31 +11,6 @@ public class Force
         this.vector = vector;
     }
 
-    public static Force CalculateForce(Entity entity, Organella organ1, Organella organ2)
-    {
-        var overallForce = NOOP;
-        var physics = new Physics();
-
-        // Intersection forces
-        var overlapSquared = organ1.shape.OverlapSquared(organ2.shape);
-        if (overlapSquared > 0)
-        {
-            overallForce += physics.IntersectionForce(organ1, organ2, overlapSquared);
-        }
-
-        // Child parent forces
-        var parent = entity.GetParent(organ1);
-        if (parent != null)
-        {
-            overallForce += physics.ChildParentForce(organ1, organ2);
-        }
-
-        // The friction
-        overallForce += physics.FrictionForce(organ1);
-
-        return overallForce;
-    }
-
     public static Force operator +(Force a, Force b)
     {
         return new Force(a.vector + b.vector);
