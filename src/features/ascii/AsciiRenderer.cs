@@ -10,7 +10,10 @@ public static class AsciiRenderer
 
     public static string Render(Entity entity, SymbolMapper mapper) 
     {
-        var organellas = entity.GetOrganellas();
+        var organellas = entity
+            .GetOrganellas();
+
+        organellas.Sort((x, y) => - x.shape.radius.CompareTo(y.shape.radius));
         
         double realLeft = organellas.Min(s => s.shape.centerX - s.shape.radius);
         double realRight = organellas.Max(s => s.shape.centerX + s.shape.radius);

@@ -75,28 +75,29 @@ public class Entity
         return organs.Values.ToList();
     }
 
+    public Entity MakeCopy()
+    {
+        return MakeWithOrgans(GetOrganellas());
+    }
+
     public Organella? GetParent(Organella organ)
     {
-        if (parents.ContainsKey(organ.id) == false)
+        if (!parents.ContainsKey(organ.id))
         {
             return null;
         } 
-        else 
-        {            
-            return organs[parents[organ.id]!];
-        }
+
+        return organs[parents[organ.id]!];
     }
 
     public Organella? GetById(string organId)
     {
-        if (organs.ContainsKey(organId))
-        {
-            return organs[organId];
-        }
-        else
+        if (!organs.ContainsKey(organId))
         {
             return null;
         }
+        
+        return organs[organId];
     }
 }
 
